@@ -3,5 +3,8 @@ package com.deepak.userservice.services;
 import com.deepak.userservice.models.User;
 
 public interface IAuthService {
-    User signup(User user);
+    User signup(String username, String password);
+    User getUserByUsername(String username);
+    boolean passwordMatches(String password, String encodedPassword);
+//    User login(String username, String password);
 }
