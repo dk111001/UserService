@@ -15,4 +15,9 @@ public class Session extends BaseModel{
     private User user;
     @Enumerated(EnumType.ORDINAL)
     private SessionStatus sessionStatus;
+
+    public void setExpiringAt(int seconds) {
+        long expiryTime = new Date().getTime() + (seconds * 1000L);
+        expiringAt = new Date(expiryTime);
+    }
 }

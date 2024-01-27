@@ -2,6 +2,7 @@ package com.deepak.userservice.controllers;
 
 import com.deepak.userservice.dtos.UserRequestDTO;
 import com.deepak.userservice.dtos.UserResponseDTO;
+import com.deepak.userservice.dtos.ValidateRequestDTO;
 import com.deepak.userservice.models.Session;
 import com.deepak.userservice.models.SessionStatus;
 import com.deepak.userservice.models.User;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -64,10 +66,22 @@ public class AuthController {
             session.setUser(user);
             session.setToken(token);
             session.setSessionStatus(SessionStatus.ACTIVE);
+            session.setExpiringAt(300);
             sessionService.createSession(session);
             MultiValueMapAdapter<String, String> headers = new MultiValueMapAdapter<>(new HashMap<>());
             headers.add(HttpHeaders.SET_COOKIE, "auth-token:" + token);
             return new ResponseEntity<>(UserResponseDTO.from(user), headers, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/validate")
+    ResponseEntity<SessionStatus> validate(@RequestBody ValidateRequestDTO validateRequestDTO) {
+        try {
+            SessionStatus sessionStatus = sessionService.validate(validateRequestDTO.getToken(), validateRequestDTO.getUserId());
+            return new ResponseEntity<>(sessionStatus, HttpStatus.OK);
         }
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
