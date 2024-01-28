@@ -61,7 +61,7 @@ public class AuthController {
             if (!authService.passwordMatches(userRequestDTO.getPassword(), user.getPassword())) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            final String token = RandomStringUtils.randomAlphanumeric(30);
+            final String token = authService.generateJwtToken(user);
             Session session = new Session();
             session.setUser(user);
             session.setToken(token);
