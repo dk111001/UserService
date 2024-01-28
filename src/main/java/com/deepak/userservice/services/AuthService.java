@@ -50,11 +50,13 @@ public class AuthService implements IAuthService {
 
     public String generateJwtToken(User user) {
         Key key = getSignInKey();
+
         return Jwts
                 .builder()
                 .setSubject(user.getUsername())
+                .setId(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60)) //how long valid
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*5)) //how long valid
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -67,6 +69,8 @@ public class AuthService implements IAuthService {
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
+
+    public Long extractUserId(String token) { return Long.valueOf(extractClaim(token, Claims::getId)); }
 
     private Claims extractAllClaims(String token){
         return Jwts

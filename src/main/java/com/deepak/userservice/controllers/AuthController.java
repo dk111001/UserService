@@ -80,7 +80,8 @@ public class AuthController {
     @PostMapping("/validate")
     ResponseEntity<SessionStatus> validate(@RequestBody ValidateRequestDTO validateRequestDTO) {
         try {
-            SessionStatus sessionStatus = sessionService.validate(validateRequestDTO.getToken(), validateRequestDTO.getUserId());
+            Long userId = authService.extractUserId(validateRequestDTO.getToken());
+            SessionStatus sessionStatus = sessionService.validate(validateRequestDTO.getToken(), userId);
             return new ResponseEntity<>(sessionStatus, HttpStatus.OK);
         }
         catch (Exception e) {
