@@ -56,7 +56,7 @@ public class AuthService implements IAuthService {
                 .setSubject(user.getUsername())
                 .setId(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*5)) //how long valid
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*24)) //how long valid
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
